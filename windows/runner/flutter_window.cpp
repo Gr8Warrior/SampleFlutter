@@ -1,4 +1,10 @@
 #include "flutter_window.h"
+#include <flutter/event_channel.h>
+#include <flutter/event_sink.h>
+#include <flutter/event_stream_handler_functions.h>
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
+#include <Windows.h>
 
 #include <optional>
 
@@ -9,10 +15,25 @@ FlutterWindow::FlutterWindow(const flutter::DartProject& project)
 
 FlutterWindow::~FlutterWindow() {}
 
+
+static int GetBatteryLevels() {
+    SYSTEM_POWER_STATUS status;
+    if (GetSystemPowerStatus(&status) == 0 || status.BatteryLifePercent == 255) {
+        return -1;
+    }
+    return status.BatteryLifePercent;
+
+}
+
 bool FlutterWindow::OnCreate() {
   if (!Win32Window::OnCreate()) {
     return false;
   }
+
+  //RegisterPlugins(flutter_controller_->engine());
+
+ 
+
 
   RECT frame = GetClientArea();
 
@@ -24,7 +45,30 @@ bool FlutterWindow::OnCreate() {
   if (!flutter_controller_->engine() || !flutter_controller_->view()) {
     return false;
   }
+
   RegisterPlugins(flutter_controller_->engine());
+  
+  flutter::MethodChannel<> channel(
+      flutter_controller_->engine()->messenger(), "samples.flutter.dev/battery",
+      &flutter::StandardMethodCodec::GetInstance());
+  channel.SetMethodCallHandler(
+      [](const flutter::MethodCall<>& call,
+          std::unique_ptr<flutter::MethodResult<>> result) {
+              //TODO
+              if (call.method_name() == "getBatteryLevel") {
+                  int batteryLevel = GetBatteryLevels();
+                  if (batteryLevel != -1) {
+                      result->Success(batteryLevel);
+                  }
+                  else {
+                      result->Error("Unavailable", "Battery level not available.");
+                  }
+              }
+              else {
+                  result->NotImplemented();
+              }
+      });
+  
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
@@ -33,6 +77,7 @@ bool FlutterWindow::OnCreate() {
 
   return true;
 }
+
 
 void FlutterWindow::OnDestroy() {
   if (flutter_controller_) {
