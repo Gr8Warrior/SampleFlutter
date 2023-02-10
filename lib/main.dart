@@ -56,10 +56,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _getBatteryLevel() async {
     String batteryLevel;
+    String text = "whatever";
 
     try {
-      final int result = await platform.invokeMethod('getBatteryLevel');
+      final int result =
+          await platform.invokeMethod('getBatteryLevel', {"text": text});
       batteryLevel = 'Battery level at $result % .';
+    } on PlatformException catch (e) {
+      batteryLevel = "failed to get battery level: '${e.message}'.";
+    }
+
+    setState(() {
+      _batteryLevel = batteryLevel;
+    });
+  }
+
+  Future<void> _configurePSK() async {
+    String batteryLevel;
+    String ssid = "TYPE_YOUR_SSID";
+    String psk = "TYPE_PSK";
+
+    try {
+      final int result = await platform
+          .invokeMethod('configurePSK', {"ssid": ssid, "psk": psk});
+      batteryLevel = 'SSID profile configured = $result % .';
     } on PlatformException catch (e) {
       batteryLevel = "failed to get battery level: '${e.message}'.";
     }
@@ -78,8 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: _getBatteryLevel,
-              child: const Text('Get BatteryLevel'),
+              onPressed: _configurePSK,
+              child: const Text('Configure PSK'),
             ),
             Text(_batteryLevel),
           ],
