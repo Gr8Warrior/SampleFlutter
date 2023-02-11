@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: _configurePSK,
+              onPressed: _getBatteryLevel,
               child: const Text('Configure PSK'),
             ),
             Text(_batteryLevel),
