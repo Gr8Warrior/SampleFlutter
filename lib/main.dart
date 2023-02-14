@@ -52,11 +52,17 @@ class _MyHomePageState extends State<MyHomePage> {
   static const platform = MethodChannel('samples.flutter.dev/battery');
 
 //Get battery level
-  String _batteryLevel = 'Unknown battery level';
+  String _batteryLevel = '';
+  // String _batteryLevel = 'Unknown battery level';
+
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   Future<void> _getBatteryLevel() async {
     String batteryLevel;
     String text = "whatever";
+
 
     try {
       final int result =
@@ -73,8 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _configurePSK() async {
     String batteryLevel;
-    String ssid = "TYPE_YOUR_SSID";
-    String psk = "TYPE_PSK";
+    String ssid = nameController.text;
+    String psk = passwordController.text;
 
     try {
       final int result = await platform
@@ -90,13 +96,34 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Material(
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [            Padding(
+            padding: EdgeInsets.all(15),
+            child: TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'SSID Name',
+                hintText: 'Enter Your wifi name',
+              ),
+            ),
+          ),
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                  hintText: 'Enter Password',
+                ),
+              ),
+            ),
             ElevatedButton(
               onPressed: _configurePSK,
               child: const Text('Configure PSK'),
