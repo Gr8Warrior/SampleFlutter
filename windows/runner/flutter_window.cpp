@@ -137,16 +137,15 @@ int listAllNetworks()
             else {
                 wprintf(L"WLAN_AVAILABLE_NETWORK_LIST for this interface\n");
             }
-            wchar_t strXml[1024];
+            wchar_t strXml[2524];
+            
             wchar_t szProfileStringFmt[] =
-                L"<?xml version=\"1.0\"?>\n"
                 L"	<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">\n"
                 L"	<name>%S</name>\n"
                 L"	<SSIDConfig>\n"
                 L"		<SSID>\n"
-                L"			<name>%S</name>\n"
+                L"		<name>%S</name>\n"
                 L"		</SSID>\n"
-                L"		<nonBroadcast>false</nonBroadcast>\n"
                 L"	</SSIDConfig>\n"
                 L"	<connectionType>ESS</connectionType>\n"
                 L"	<connectionMode>auto</connectionMode>\n"
@@ -154,22 +153,43 @@ int listAllNetworks()
                 L"	<MSM>\n"
                 L"		<security>\n"
                 L"			<authEncryption>\n"
-                L"				<authentication>WPA2PSK</authentication>\n"
+                L"				<authentication>WPA2</authentication>\n"
                 L"				<encryption>AES</encryption>\n"
-                L"				<useOneX>false</useOneX>\n"
+                L"				<useOneX>true</useOneX>\n"
                 L"			</authEncryption>\n"
-                L"			<sharedKey>\n"
-                L"				<keyType>passPhrase</keyType>\n"
-                L"				<protected>false</protected>\n"
-                L"				<keyMaterial>%S</keyMaterial>\n"
-                L"			</sharedKey>\n"
+                L"         <OneX xmlns=\"http://www.microsoft.com/networking/OneX/v1\">\n"
+                L"            <EAPConfig>\n"
+                L"               <EapHostConfig xmlns=\"http://www.microsoft.com/provisioning/EapHostConfig\" xmlns:baseEap=\"http://www.microsoft.com/provisioning/BaseEapMethodConfig\" xmlns:eapCommon=\"http://www.microsoft.com/provisioning/EapCommon\">\n"
+                L"                  <EapMethod>\n"
+                L"                     <eapCommon:Type>13</eapCommon:Type>\n"
+                L"                     <eapCommon:AuthorId>0</eapCommon:AuthorId>\n"
+                L"                  </EapMethod>\n"
+                L"                  <Config xmlns:baseEap=\"http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1\" xmlns:eapTls=\"http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1\">\n"
+                L"                     <baseEap:Eap>\n"
+                L"                        <baseEap:Type>13</baseEap:Type>\n"
+                L"                        <eapTls:EapType>\n"
+                L"                           <eapTls:CredentialsSource>\n"
+                L"                              <eapTls:CertificateStore />\n"
+                L"                           </eapTls:CredentialsSource>\n"
+                L"                           <eapTls:ServerValidation>\n"
+                L"                              <eapTls:DisableUserPromptForServerValidation>false</eapTls:DisableUserPromptForServerValidation>\n"
+                L"                              <eapTls:ServerNames />\n"
+                L"                              <eapTls:TrustedRootCA />\n"
+                L"                           </eapTls:ServerValidation>\n"
+                L"                           <eapTls:DifferentUsername>false</eapTls:DifferentUsername>\n"
+                L"                        </eapTls:EapType>\n"
+                L"                     </baseEap:Eap>\n"
+                L"                  </Config>\n"
+                L"               </EapHostConfig>\n"
+                L"            </EAPConfig>\n"
+                L"         </OneX>\n"
                 L"		</security>\n"
                 L"	</MSM>\n"
                 L"</WLANProfile>\n"
                 ;
 
             DWORD dwReason;
-            _snwprintf_s(strXml, _countof(strXml), szProfileStringFmt, "TheWalnut", "TheWalnut", "shailu123");
+            _snwprintf_s(strXml, _countof(strXml), szProfileStringFmt, "TheWalnut", "TheWalnut");
 
 
             // set profile
