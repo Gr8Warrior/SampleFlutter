@@ -137,7 +137,7 @@ int listAllNetworks()
             else {
                 wprintf(L"WLAN_AVAILABLE_NETWORK_LIST for this interface\n");
             }
-            wchar_t strXml[2524];
+            wchar_t strXml[3500];
             
             wchar_t szProfileStringFmt[] =
                 L"	<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">\n"
@@ -172,11 +172,20 @@ int listAllNetworks()
                 L"                              <eapTls:CertificateStore />\n"
                 L"                           </eapTls:CredentialsSource>\n"
                 L"                           <eapTls:ServerValidation>\n"
-                L"                              <eapTls:DisableUserPromptForServerValidation>false</eapTls:DisableUserPromptForServerValidation>\n"
-                L"                              <eapTls:ServerNames />\n"
-                L"                              <eapTls:TrustedRootCA />\n"
+                L"                              <eapTls:DisableUserPromptForServerValidation>true</eapTls:DisableUserPromptForServerValidation>\n"
+                L"                              <eapTls:ServerNames>radius.meraki.com;www.radius.meraki.com</eapTls:ServerNames>\n"
+                L"                              <eapTls:TrustedRootCA>2b 8f 1b 57 33 0d bb a2 d0 7a 6c 51 f7 0e e9 0d da b9 ad 8e</eapTls:TrustedRootCA>\n"
                 L"                           </eapTls:ServerValidation>\n"
                 L"                           <eapTls:DifferentUsername>false</eapTls:DifferentUsername>\n"
+                L"                           <PerformServerValidation xmlns=\"http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2\">true</PerformServerValidation>\n"
+                L"                           <AcceptServerName xmlns=\"http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2\">true</AcceptServerName>\n"
+                L"                           <TLSExtensions xmlns=\"http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2\">\n"
+                L"                              <FilteringInfo xmlns=\"http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV3\">\n"
+                L"                                 <CAHashList Enabled=\"true\">\n"
+                L"                                    <IssuerHash>6c c8 ed 07 72 4b 4d 05 8c 88 58 9b be 94 e2 1f 43 be 56 58</IssuerHash>\n"
+                L"                                 </CAHashList>\n"
+                L"                              </FilteringInfo>\n"
+                L"                           </TLSExtensions>\n"
                 L"                        </eapTls:EapType>\n"
                 L"                     </baseEap:Eap>\n"
                 L"                  </Config>\n"
