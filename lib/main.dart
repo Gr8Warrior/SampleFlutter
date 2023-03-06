@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -71,6 +73,45 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> _checkCmd() async {
+    String batteryLevel;
+    String text = "whatever";
+
+    try {
+      //certutil.exe -f -user -p 123456 -importpfx C:\openssl-certs\domain.pfx
+      var result = await Process.run(
+          'C:\\Windows\\System32\\netsh.exe', ['wlan', 'show', 'profiles']);
+
+//Adding User Certificate
+      // var result = await Process.run('C:\\Windows\\System32\\certutil.exe', [
+      //   '-f',
+      //   '-user',
+      //   '-p',
+      //   '123456',
+      //   '-importpfx',
+      //   'C:\\openssl-certs\\domain.pfx'
+      // ]);
+
+//Adding root certificate
+//Getting Error for not using Administrator permissions
+      // var result = await Process.run('C:\\Windows\\System32\\certutil.exe',
+      //     ['-addstore', '-f', 'Root', 'C:\\openssl-certs\\domain.crt']);
+      batteryLevel = (result.stdout);
+
+//Connecting to ssid
+      // var result = await Process.run('C:\\Windows\\System32\\netsh.exe',
+      //     ['wlan', 'connect', 'name=TheWalnut', 'ssid=TheWalnut']);
+      // batteryLevel = (result.stdout);
+      //batteryLevel = 'Battery level at $result % .';
+    } on PlatformException catch (e) {
+      batteryLevel = "failed to get battery level: '${e.message}'.";
+    }
+
+    setState(() {
+      _batteryLevel = batteryLevel;
+    });
+  }
+
   Future<void> _configurePSK() async {
     String batteryLevel;
     String ssid = "TYPE_YOUR_SSID";
@@ -100,6 +141,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: _getBatteryLevel,
               child: const Text('Configure PSK'),
+            ),
+            ElevatedButton(
+              onPressed: _checkCmd,
+              child: const Text('Configure Test'),
             ),
             Text(_batteryLevel),
           ],
